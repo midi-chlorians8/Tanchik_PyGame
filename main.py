@@ -7,19 +7,7 @@ screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 
 
-# class Wall:
-#     def __init__(self, start_pos_x, start_pos_y, count, dir):
-#         self.x = start_pos_x
-#         self.y = start_pos_y
-#         self.count = count
-#         self.dir = dir
-#
-#     def draw(self):
-#         # Object Wall
-#         color_wall = (200, 200, 100)  # Color body tank
-#         pygame.draw.rect(screen, color_wall, pygame.Rect(30 + self.x, 30 + self.y, 60, 30))
-#
-# wall = Wall(0,0,2,"hor")
+
 class Wall2:
     def __init__(self):
         self.x = 1
