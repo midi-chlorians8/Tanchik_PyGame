@@ -6,8 +6,6 @@ pygame.init()
 screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 
-
-
 class Wall2:
     def __init__(self):
         self.x = 1
