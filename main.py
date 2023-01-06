@@ -6,6 +6,15 @@ pygame.init()
 screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 
+
+class Bullet:
+    def __init__(self):
+        self.x = 1
+        self.y = 1
+
+
+
+
 class Wall2:
     def __init__(self):
         self.x = 1
@@ -110,17 +119,22 @@ class MyTank:
             self.stopUp = False
             self.stopLeft = False
             self.stopRight = False
-            # if self.last_dir != 'down':
-            #     self.stop = False
 
             self.up = False
             self.down = True
             self.right = False
             self.left = False
 
-        print(f"Tank coord x= {self.x} y= {self.y}, last_dir={self.last_dir}, "
-              f"stopLeft = {self.stopLeft}, stopUp = {self.stopUp}, stopRight = {self.stopRight}",
-              f"self.left = {self.left}")
+        elif keys[pygame.K_SPACE]:
+            print("AAAAA")
+
+        print(f"Tank coord x= {self.x} y= {self.y}"
+              # f", last_dir={self.last_dir}, "
+              # f"stopLeft = {self.stopLeft}, stopUp = {self.stopUp}, stopRight = {self.stopRight}",
+              # f"self.left = {self.left}"
+              )
+
+
 
     def draw(self):
         # Object Tank
@@ -142,46 +156,27 @@ class MyTank:
 
 
         # ==================================== Обработка столкновений ==================================
-        if (tannchik_weapon.colliderect(walls.getwallslist()[0]) or tannchik_body.colliderect(
-                walls.getwallslist()[0] )) and self.up == True:  # сюда над завести стену
-            self.stopUp = True
-            self.y = self.y + 1  # If tank inside wall - move back
+        for wall in walls.getwallslist():
+            print(wall)
+            if (tannchik_weapon.colliderect(wall) or tannchik_body.colliderect(
+                    wall)) and self.up == True:  # сюда над завести стену
+                self.stopUp = True
+                self.y = self.y + 1  # If tank inside wall - move back
 
-        elif (tannchik_weapon.colliderect(walls.getwallslist()[0]) or tannchik_body.colliderect(
-                walls.getwallslist()[0])) and self.down == True:  # сюда над завести стену
-            self.stopDown = True
-            self.y = self.y - 1  # If tank inside wall - move back
+            elif (tannchik_weapon.colliderect(wall) or tannchik_body.colliderect(
+                    wall)) and self.down == True:  # сюда над завести стену
+                self.stopDown = True
+                self.y = self.y - 1  # If tank inside wall - move back
 
-        elif (tannchik_weapon.colliderect(walls.getwallslist()[0]) or tannchik_body.colliderect(
-                walls.getwallslist()[0])) and self.left == True:  # сюда над завести стену
-            self.stopLeft = True
-            self.x = self.x + 1  # If tank inside wall - move back
+            elif (tannchik_weapon.colliderect(wall) or tannchik_body.colliderect(
+                    wall)) and self.left == True:  # сюда над завести стену
+                self.stopLeft = True
+                self.x = self.x + 1  # If tank inside wall - move back
 
-        elif (tannchik_weapon.colliderect(walls.getwallslist()[0]) or tannchik_body.colliderect(
-                walls.getwallslist()[0])) and self.right == True:  # сюда над завести стену
-            self.stopRight = True
-            self.x = self.x - 1  # If tank inside wall - move back
-
-        # double code from second wall
-        if (tannchik_weapon.colliderect(walls.getwallslist()[1]) or tannchik_body.colliderect(
-                walls.getwallslist()[1] )) and self.up == True:  # сюда над завести стену
-            self.stopUp = True
-            self.y = self.y + 1  # If tank inside wall - move back
-
-        elif (tannchik_weapon.colliderect(walls.getwallslist()[1]) or tannchik_body.colliderect(
-                walls.getwallslist()[1])) and self.down == True:  # сюда над завести стену
-            self.stopDown = True
-            self.y = self.y - 1  # If tank inside wall - move back
-
-        elif (tannchik_weapon.colliderect(walls.getwallslist()[1]) or tannchik_body.colliderect(
-                walls.getwallslist()[1])) and self.left == True:  # сюда над завести стену
-            self.stopLeft = True
-            self.x = self.x + 1  # If tank inside wall - move back
-
-        elif (tannchik_weapon.colliderect(walls.getwallslist()[1]) or tannchik_body.colliderect(
-                walls.getwallslist()[1])) and self.right == True:  # сюда над завести стену
-            self.stopRight = True
-            self.x = self.x - 1  # If tank inside wall - move back
+            elif (tannchik_weapon.colliderect(wall) or tannchik_body.colliderect(
+                    wall)) and self.right == True:  # сюда над завести стену
+                self.stopRight = True
+                self.x = self.x - 1  # If tank inside wall - move back
 
         if self.left:
             self.last_dir = 'left'
