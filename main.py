@@ -1,128 +1,19 @@
 import pygame
 
+
+
 pygame.init()
 
-width, height = 640, 480
+width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 
-
-class Bullet:
-    def __init__(self):
-        self.x = 1
-        self.y = 1
-
-        self.faerrr = False
-        self.dir = "down"
-
-    def set_zapusk(self, faer, tank_coords):
-        self.faerrr = faer
-        self.dir = tank_coords[2]
-
-        if self.faerrr == False:
-            if self.dir == "up":
-                self.y = tank_coords[1] + 5
-                self.x = tank_coords[0] + 60
-            elif self.dir == "down":
-                self.y = tank_coords[1] + 110
-                self.x = tank_coords[0] + 60
-            elif self.dir == "left":
-                self.y = tank_coords[1] + 60
-                self.x = tank_coords[0] + 5
-            elif self.dir == "right":
-                self.y = tank_coords[1] + 60
-                self.x = tank_coords[0] + 110
-
-    def draw(self):
-        # self.y = tank_coords[1] + 5
-        # if self.faerrr == True:
-        color_wall = (200, 200, 100)  # Color bullet
-
-        if self.dir == "up":
-            pygame.draw.rect(screen, color_wall,
-                             pygame.Rect(self.x , self.y, 2, 5))
-            self.y -= 20
-            print(self.y)
-
-        if self.dir == "down":
-            pygame.draw.rect(screen, color_wall,
-                             pygame.Rect(self.x , self.y, 2, 5))
-            self.y += 20
-
-        if self.dir == "left":
-            pygame.draw.rect(screen, color_wall,
-                             pygame.Rect(self.x , self.y, 5, 2))
-            self.x -= 20
-
-        if self.dir == "right":
-            pygame.draw.rect(screen, color_wall,
-                             pygame.Rect(self.x , self.y, 5, 2))
-            self.x += 20
-
+from bullet import *
 bullet = Bullet()
 
 
-class Wall2:
-    def __init__(self):
-        self.x = 1
-        self.wall_list = []
-        self.lv_mass = [
-            ['*', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-            ['*', '-', '-', '*', '-', '*', '-', '-', '-'],
-            ['-', '-', '-', '-', '*', '-', '-', '-', '-'],
-            ['*', '-', '-', '-', '*', '-', '-', '-', '-'],
-            ['-', '-', '*', '-', '-', '-', '*', '-', '-'],
-            ['*', '-', '-', '*', '*', '*', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-', '-']
-        ]
 
-    def draw(self):
-        s = 0
-        box_height_res = 0
-        box_height = 0
-
-        box_width = 0
-        for row in self.lv_mass:
-            box_height_res += 1
-            for elem in row:
-                # s += elem
-                box_width_res = len(row)
-        box_width = width / (box_width_res)  # ширина куба стенки = ширина экрана / кол-во элментов по ширине
-        box_height = height / box_height_res  # высота куба стенки
-
-        # print(
-        #     f", width ={width} "
-        #     f" height= {height} "
-        #
-        #     f", box_height_res={box_height_res} "
-        #     f", box_width_res ={box_width_res} "
-        #
-        #     f", box_width ={box_width} "
-        #     f" box_height= {box_height}"
-        #       )
-        t = []  #
-        counter_ver = -1
-        color_wall = (200, 200, 100)  # Color wall
-        for row in self.lv_mass:
-            counter_hor = -1
-            counter_ver += 1
-            for elem in row:
-                counter_hor += 1
-                if elem == '*':
-                    obj = pygame.draw.rect(screen, color_wall,
-                                           pygame.Rect(counter_hor * box_width, counter_ver * box_height, box_width,
-                                                       box_height))
-                    t.append(obj)
-        # Object Wall list
-
-        self.wall_list = t  # [w1, w2]
-        # print(self.wall_list)
-
-    def getwallslist(self):
-        return self.wall_list
-
-
+from wall import *
 walls = Wall2()
 
 
@@ -148,7 +39,7 @@ class MyTank:
 
     def input_keys(self):
 
-        speed = 3  # speed move
+        speed = 8  # speed move
         # print("Hello my name is " + self.name)
         keys = pygame.key.get_pressed()
 
@@ -163,8 +54,8 @@ class MyTank:
             if self.last_dir != 'left':
                 self.stop = False
 
-            if self.x < 0:
-                self.x = 0
+            if self.x < -10:
+                self.x = -9
 
             self.right = False
             self.left = True
@@ -176,6 +67,10 @@ class MyTank:
         elif keys[pygame.K_RIGHT]:
             if self.stopRight == False:
                 self.x += speed
+
+
+            if self.x > width-80:
+                self.x = width -70
 
             self.stopLeft = False
             self.stopUp = False
@@ -197,8 +92,8 @@ class MyTank:
             self.stopLeft = False
             self.stopRight = False
 
-            if self.y < 0:
-                self.y = 0
+            if self.y < -10:
+                self.y = -9
 
             self.up = True
             self.down = False
@@ -219,14 +114,14 @@ class MyTank:
             self.left = False
 
         elif keys[pygame.K_SPACE]:
-            print("AAAAA")
+            # print("AAAAA")
             self.trigger_state = True
 
-        print(f"Tank coord x= {self.x} y= {self.y}"
-              # f", last_dir={self.last_dir}, "
-              # f"stopLeft = {self.stopLeft}, stopUp = {self.stopUp}, stopRight = {self.stopRight}",
-              # f"self.left = {self.left}"
-              )
+        # print(f"Tank coord x= {self.x} y= {self.y}"
+        #       # f", last_dir={self.last_dir}, "
+        #       # f"stopLeft = {self.stopLeft}, stopUp = {self.stopUp}, stopRight = {self.stopRight}",
+        #       # f"self.left = {self.left}"
+        #       )
 
     def set_pull_trigger(self, state):
         self.trigger_state = state
@@ -303,6 +198,10 @@ while True:
 
     bullet.set_zapusk(tank.get_pull_trigger(), tank.get_coords_dir())
     bullet.draw()
+    bullet.detecting_collision(walls.getwallslist())
+    #print(walls.getwallslist())
+
+    tank.set_pull_trigger(bullet.get_bullet_state() )
 
     pygame.display.flip()  # Refresh on-screen display
     clock.tick(60)  # wait until next frame (at 60 FPS)
