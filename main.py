@@ -16,6 +16,15 @@ bullet = Bullet()
 from wall import *
 walls = Wall2()
 
+class Enemy:
+    def __init__(self, enemy_count):
+        self.enemy_count = enemy_count
+
+    def logic(self):
+        pass
+
+    def draw(self):
+        pass
 
 class MyTank:
 
