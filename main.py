@@ -1,6 +1,5 @@
 import pygame
-
-
+import random
 
 pygame.init()
 
@@ -17,15 +16,130 @@ from wall import *
 walls = Wall2()
 
 class Enemy:
-    def __init__(self, enemy_count):
-        self.enemy_count = enemy_count
+    def __init__(self):
+        self.level = 1
+        self.enemy_count = 1
 
-    def logic(self):
-        pass
+        self.spawn_coords_mass = [[300,200],[200,100]]
+        #print(self.spawn_coords_mass[0][0])
+        #self.spawn_coords_x = 300
+        #self.spawn_coords_y = 200
+
+        self.directions_mass = [{"up":False,"down":False,"right":True,"left":False},{"up":False,"down":False,"right":True,"left":False}]
+        #print(self.directions_mass[0]["right"])
+        # self.up = False  # directions
+        # self.down = False
+        # self.right = True
+        # self.left = False
+
+        self.touch_to_new_dir = False
+        self.touch_counter = 0
+    def logic(self, level):
+        self.level = level
+
+        #print(self.spawn_coords_mass[0][0])
+        if self.level == 1:
+            self.enemy_count = 2
+
+# Обработка движения взависимости от направления:
+#         for enemy in range(self.enemy_count):
+#             print(enemy)
+
+        if self.directions_mass[0]["right"] == True: #self.right == True:
+            self.spawn_coords_mass[0][0] +=4
+
+        if self.directions_mass[0]["left"] == True: #self.right == True:
+            self.spawn_coords_mass[0][0] -=4
+
+        if self.directions_mass[0]["up"] == True: #self.right == True:
+            self.spawn_coords_mass[0][1] -=4
+
+        if self.directions_mass[0]["down"] == True: #self.right == True:
+            self.spawn_coords_mass[0][1] +=4
+
+# Обработка движения взависимости от направления:
+
+
+#Если выходим за пределы уровня. Обработка врага №0:
+        if self.spawn_coords_mass[0][0] > width - 130:
+            self.directions_mass[0]["right"] = False
+            lastdir = "right"
+
+            self.touch_to_new_dir = True
+            self.spawn_coords_mass[0][0] = width - 130 # отходим назад чтоб один раз спокойно выбрать новое направление движения
+        #
+        elif self.spawn_coords_mass[0][0] < 0 :
+            self.directions_mass[0]["left"] = False
+            lastdir = "left"
+
+            self.touch_to_new_dir = True
+            self.spawn_coords_mass[0][0] = 0 # отходим назад чтоб один раз спокойно выбрать новое направление движения
+
+        elif self.spawn_coords_mass[0][1] < 0 :
+            self.directions_mass[0]["up"] = False
+            lastdir = "up"
+
+            self.touch_to_new_dir = True
+            self.spawn_coords_mass[0][1] = 0 # отходим назад чтоб один раз спокойно выбрать новое направление движения
+
+        elif self.spawn_coords_mass[0][1] > height -120:
+            self.directions_mass[0]["down"] = False
+            lastdir = "down"
+
+            self.touch_to_new_dir = True
+            self.spawn_coords_mass[0][1] = height -120 # отходим назад чтоб один раз спокойно выбрать новое направление движения
+
+# Если выходим за пределы уровня. Обработка врага №0:
+
+        if self.touch_to_new_dir == True: # коснулись чего-то и меняем направление
+            self.rand(lastdir)
+            new_dir = self.rand(lastdir)
+            print(new_dir)
+            if new_dir == 'up':
+                self.directions_mass[0]["up"] = True
+            elif new_dir == 'down':
+                self.directions_mass[0]["down"] = True
+            elif new_dir == 'right':
+                self.directions_mass[0]["right"] = True
+            elif new_dir == 'left':
+                self.directions_mass[0]["left"] = True
+
+            #print(self.spawn_coords_mass[0][0])
+
+            self.touch_to_new_dir = False
+
+
+    def rand(self, lastdir_income):
+        #print(lastdir_income)
+        dir_list = ['up', 'down', 'right','left']
+
+        index = -1
+        for element in dir_list: # Удаляем из списка всех направлений то где мы уже были
+            #print(element)
+            index += 1
+            if element == lastdir_income:
+                del dir_list[index]
+
+        res = random.choice(dir_list)
+        return res
+
 
     def draw(self):
-        pass
+        color = (95, 140, 130)  # Color body tank
+        tannchik_body = pygame.draw.rect(screen, color, pygame.Rect(30 + self.spawn_coords_mass[0][0], 30 + self.spawn_coords_mass[0][1], 60, 60))
 
+        # draw tank weapon depend button up down right left
+        color = (255, 100, 0)  # Color weapon
+        if self.directions_mass[0]["up"] == True:#self.up:
+            tannchik_weapon = pygame.draw.rect(screen, color, pygame.Rect(50 + self.spawn_coords_mass[0][0], 10 + self.spawn_coords_mass[0][1], 20, 20))
+        if self.directions_mass[0]["down"] == True:#self.down:
+            tannchik_weapon = pygame.draw.rect(screen, color, pygame.Rect(50 + self.spawn_coords_mass[0][0], 90 + self.spawn_coords_mass[0][1], 20, 20))
+        if self.directions_mass[0]["right"] == True:#self.right:
+            tannchik_weapon = pygame.draw.rect(screen, color, pygame.Rect(90 + self.spawn_coords_mass[0][0], 50 + self.spawn_coords_mass[0][1], 20, 20))
+        if self.directions_mass[0]["left"] == True: #self.left:
+            tannchik_weapon = pygame.draw.rect(screen, color, pygame.Rect(10 + self.spawn_coords_mass[0][0], 50 + self.spawn_coords_mass[0][1], 20, 20))
+        # draw tank weapon depend button up down right left
+enemies = Enemy()
 class MyTank:
 
     def __init__(self, start_pos_x, start_pos_y):
@@ -78,8 +192,8 @@ class MyTank:
                 self.x += speed
 
 
-            if self.x > width-80:
-                self.x = width -70
+            if self.x > width-120:
+                self.x = width -110
 
             self.stopLeft = False
             self.stopUp = False
@@ -112,6 +226,9 @@ class MyTank:
         elif keys[pygame.K_DOWN]:
             if self.stopDown == False:
                 self.y += speed
+
+            if self.y > height -110:
+                self.y = height -110
 
             self.stopUp = False
             self.stopLeft = False
@@ -211,6 +328,9 @@ while True:
     #print(walls.getwallslist())
 
     tank.set_pull_trigger(bullet.get_bullet_state() )
+
+    enemies.logic(level=1)
+    enemies.draw()
 
     pygame.display.flip()  # Refresh on-screen display
     clock.tick(60)  # wait until next frame (at 60 FPS)
